@@ -41,6 +41,5 @@ simplify = FALSE, types = c("arguments", "functions", "packages"))
 
 \examples{
 CompletePlus("dn")
-CompletePlus("rnorm(10, me")
 }
 \keyword{ utilities }
