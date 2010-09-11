@@ -1,5 +1,6 @@
 \name{CompletePlus}
 \alias{CompletePlus}
+
 \title{ Get completion and additional information from an R code fragment }
 \description{
   The function generates completion possibilities and investigate
@@ -7,20 +8,23 @@
 }
 \usage{
 CompletePlus(linebuffer, cursorPosition = nchar(linebuffer), minlength = 2,
-simplify = FALSE, types = c("arguments", "functions", "packages"))
+    simplify = FALSE, types = c("arguments", "functions", "packages"))
 }
 
 \arguments{
-  \item{linebuffer}{ R code fragment }
-  \item{cursorPosition}{ Position of the cursor in the fragment }
-  \item{minlength}{ Minimum size the fragment needs to be to perform the
-    completion }
-  \item{simplify}{ Logical. If TRUE, then the result is printed in strings with
+  \item{linebuffer}{ R code fragment. }
+  \item{cursorPosition}{ position of the cursor in the fragment. }
+  \item{minlength}{ minimum size the fragment needs to be to perform the
+    completion. }
+  \item{simplify}{ logical. If TRUE, then the result is printed in strings with
     tabulation as field separators. }
-  \item{types}{ Which types of items should we be looking for? }
+  \item{types}{ which types of items should we be looking for? }
 }
 
 \details{
+  This function is deprecated in favor of \code{completion()}. It will
+  disappear in version 1.0 of the svMisc package!
+  
   The information given back depends on the kind of completion performed. If a
   potential completion ends with the equal sign, then \code{CompletePlus} tries
   to get information on the argument from the guessed function. If the potential
@@ -37,9 +41,8 @@ simplify = FALSE, types = c("arguments", "functions", "packages"))
 
 \author{ Romain Francois <rfrancois@mango-solutions.com> }
 
-\seealso{ \code{\link{Complete}}, \code{\link{descFun}} }
+\seealso{ \code{\link{completion}}, \code{\link{descFun}} }
 
-\examples{
-CompletePlus("dn")
-}
 \keyword{ utilities }
+
+\concept{ Graphical user interface (GUI) control, completion }

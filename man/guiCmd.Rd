@@ -8,26 +8,26 @@
 \alias{guiSetwd}
 \alias{guiSource}
 
-
 \title{ Execute a command in the GUI client }
 \description{
   This function is not intended to be used at the command line (except for
   debugging purposes). It executes a command string to a (compatible) GUI client.
 }
 \usage{
-guiCmd(command, ...)
-guiImport(...)
-guiExport(...)
-guiLoad(...)
-guiReport(...)
-guiSave(...)
-guiSetwd(...)
-guiSource(...)
+guiCmd(command, \dots)
+guiImport(\dots)
+guiExport(\dots)
+guiLoad(\dots)
+guiReport(\dots)
+guiSave(\dots)
+guiSetwd(\dots)
+guiSource(\dots)
 }
 
 \arguments{
-  \item{command}{ The command string to execute in the GUI client }
-  \item{\dots}{ Parameters provided for the command to execute in the GUI client }
+  \item{command}{ the command string to execute in the GUI client. }
+  \item{\dots}{ parameters provided for the command to execute in the GUI
+  client. }
 }
 
 \value{
@@ -38,10 +38,11 @@ guiSource(...)
 \details{
   You must define a function \code{.guiCmd()} in the \code{TempEnv} environment
   that will take first argument as the name of the command to execute (like
-  \code{source}, \code{save}, \code{import}, etc), and \dots with arguments to the
-  command to send. Depending on your GUI, you should have code that delegates
-  the GUI elements (ex: display a dialog asking for a .Rdata file to source)
-  and then, execute the command in R with the selected file as attribute.
+  \code{source}, \code{save}, \code{import}, etc), and \dots with arguments to
+  the command to send. Depending on your GUI, you should have code that
+  delegates the GUI elements (ex: display a dialog asking for a .Rdata file to
+  source) and then, execute the command in R with the selected file as
+  attribute.
 }
 
 \author{Philippe Grosjean (\email{phgrosjean@sciviews.org})}
@@ -49,3 +50,5 @@ guiSource(...)
 \seealso{ \code{\link{assignTemp}} }
 
 \keyword{misc}
+
+\concept{ Graphical user interface (GUI) control }
