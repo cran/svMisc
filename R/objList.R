@@ -5,30 +5,49 @@ path = NULL, compare = TRUE, ...)
 	## Make sure that id is character
 	id <- as.character(id)[1]
 	if (id == "") id <- "default"
+	ename <- NA
 
 	## Format envir as character (use only first item provided!)
 	if (!is.environment(envir)){
-		envir <- tryCatch(as.environment(envir), error = function(e) NULL)
-		if (is.null(envir) || inherits(envir, "error")) {
-			envir <- NULL
-			ename <- ""
-		} else {
-			ename <- if (is.null(attr(envir, "name"))) ".GlobalEnv" else
-				attr(envir, "name")
+		if(is.numeric(envir) && envir > 0)
+			envir <- search()[envir]
+
+		if (is.character(envir)) {
+			ename <- envir
+			envir <- tryCatch(as.environment(envir), error = function(e) NULL)
+			if (is.null(envir) || inherits(envir, "error")) {
+				envir <- NULL
+				ename <- ""
+			}
 		}
-	} else {
-		ename <- deparse(substitute(envir))
 	}
 
+	# base and .GlobalEnv do not have name attribute
+	if (!is.null(attr(envir, "name"))) ename <- attr(envir, "name")
+	else if (is.na(ename)) ename <- deparse(substitute(envir))
+	if (ename %in% c("baseenv()", ".BaseNamespaceEnv"))
+		ename <- "package:base"
+
+
 	## Object to return in case of empty data
-	Nothing <- data.frame(Envir = character(0), Name = character(0),
+	#Nothing <- data.frame(Envir = character(0), Name = character(0),
+	#	Dims = character(0), Group = character(0), Class = character(0),
+	#	Recursive = logical(0), stringsAsFactors = FALSE)
+	#if (!isTRUE(all.info)) Nothing <- Nothing[, -1]
+	#attr(Nothing, "all.info") <- all.info
+	#attr(Nothing, "envir") <- ename
+	#attr(Nothing, "object") <- object
+	#class(Nothing) <- c("objList", "data.frame")
+
+	# This is ~15x faster:
+	Nothing <- structure(list(Name = character(0),
 		Dims = character(0), Group = character(0), Class = character(0),
-		Recursive = logical(0), stringsAsFactors = FALSE)
-	if (!isTRUE(all.info)) Nothing <- Nothing[, -1]
-	attr(Nothing, "all.info") <- all.info
-	attr(Nothing, "envir") <- ename
-	attr(Nothing, "object") <- object
-	class(Nothing) <- c("objList", "data.frame")
+		Recursive = logical(0), stringsAsFactors = FALSE),
+			class=c("objList", "data.frame"),
+			all.info= all.info, envir=ename, object=object
+		)
+		if (isTRUE(all.info)) Nothing <- cbind(Envir = character(0), Nothing)
+
 
 	if (is.null(envir)) return(Nothing)
 
@@ -56,6 +75,12 @@ path = NULL, compare = TRUE, ...)
 		}
 		res <- data.frame(t(sapply(Items, describe, all.info = all.info)),
 			stringsAsFactors = FALSE)
+
+		# Quote non-syntactic names
+		nsx <- res$Name != make.names(res$Name)
+		res$Full.name[!nsx] <- res$Name[!nsx]
+		res$Full.name[nsx] <- paste("`", res$Name[nsx], "`", sep = "")
+		res <- res[, c(1, 6, 2:5)]
 	}
 
 	if (NROW(res) == 0) return(Nothing)
@@ -202,18 +227,7 @@ header = !attr(x, "all.info"), raw.output = !is.na(sep), ...)
 				seq_along(itemnames)[!w.names], "]]", sep = "")
 		}
 
-		ret <- t(sapply(seq_along(obj), function (i) {
-			x <- obj[[i]]
-
-			d <- dim(x)
-			if (is.null(d)) d <- length(x)
-
-			ret <- c(paste(d, collapse = "x"), mode(x), class(x)[1],
-				is.function(x) || (is.recursive(x) && !is.language(x) &&
-				sum(d) != 0)
-			)
-			return(ret)
-		}))
+		ret <- t(sapply(seq_along(obj), function (i) .objDescr(obj[[i]])))
 
 		ret <- data.frame(itemnames, fullnames, ret, stringsAsFactors = FALSE)
 	}
@@ -265,17 +279,19 @@ header = !attr(x, "all.info"), raw.output = !is.na(sep), ...)
 	itemnames[nsx] <- paste("`", itemnames[nsx], "`", sep = "")
 	fullnames <- paste(objname, "@", itemnames, sep = "")
 
-	ret <- t(sapply(itemnames, function (i) {
-		x <- slot(obj, i)
-
-		d <- dim(x)
-		if (is.null(d)) d <- length(x)
-
-		ret <- c(paste(d, collapse = "x"), mode(x), class(x)[1],
-			is.function(x) || (is.recursive(x) && !is.language(x) &&
-			sum(d) != 0))
-	}))
+	ret <- t(sapply(itemnames, function (i) .objDescr(slot(obj, i))))
 
 	ret <- data.frame(itemnames, fullnames, ret, stringsAsFactors = FALSE)
 	return(ret)
+}
+
+## Returns a *character* vector with elements: dims, mode, class, rec(ursive)
+.objDescr <- function (x) {
+	d <- dim(x)
+	if (is.null(d)) d <- length(x)
+
+	return(c(dims = paste(d, collapse = "x"),
+		mode = mode(x), class = class(x)[1],
+		rec = mode(x) == "S4" || is.function(x) ||
+		(is.recursive(x) && !is.language(x) && sum(d) != 0)))
 }
