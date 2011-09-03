@@ -1,204 +1,222 @@
-captureAll <- function (expr, split = FALSE, file = NULL)
-{
-	## If expr is NA, just return it
-	if (!is.language(expr))
-		if (identical(expr, NA))
-			return(NA) else stop("'expr' must be an expression or NA")
-	## Ensure split is always a boolean
+## Inspired by 'capture.output' and utils:::.try_silent
+## Requires: R >= 2.13.0 [??]
+`captureAll` <- function (expr, split = TRUE, echo = TRUE, file = NULL,
+markStdErr = FALSE) {
+	if (!is.expression(expr))
+		if (is.na(expr)) return(NA) else
+		stop("expr must be an expression or NA")
+	
+	## TODO: support for 'file'
+	## markStdErr: if TRUE, stderr is separated from sddout by STX/ETX character
+
+	last.warning <- list()
+	Traceback <- list()
+	NframeOffset <- sys.nframe() + 23L	# frame of reference (used in traceback)
+										# + length of the call stack when a
+										# condition occurs
+	## Note: if 'expr' is a call not expression, 'NframeOffset' is lower by 2
+	## (i.e. 24): -1 for lapply, -1 for unwrapping 'expression()'
+
+	getWarnLev <- function() options('warn')[[1L]]	# This may change in course
+													# of evaluation, so must be
+													# retrieved dynamically
+	rval <- NULL
+	tconn <- textConnection("rval", "w", local = TRUE)
 	split <- isTRUE(split)
-
-	## captureAll() is inspired from capture.output(), but it captures
-	## both the output and the message streams (without redirecting
-	## the message stream, but by using a withCallingHandlers() construct).
-	rval <- NULL	# Just to avoid a note during code analysis
-	if (is.null(file)) file <- textConnection("rval", "w", local = TRUE)
-	sink(file, type = "output", split = split)
-
-	## This is a hack to display warning(..., immediate.) correctly
-	## (except from base objects) because there is no way to detect it
-	## in our handler with the current warning() function
-	assign("warning", function(..., call. = TRUE, immediate. = FALSE,
-		domain = NULL) {
-		args <- list(...)
-		if (length(args) == 1 && inherits(args[[1]], "condition")) {
-			base::warning(..., call. = call., immediate. = immediate.,
-				domain = domain)
-		} else {
-			## Deal with immediate warnings
-			oldwarn <- getOption("warn")
-			if (immediate. && oldwarn < 1) {
-				options(warn = 1)
-				on.exit(options(warn = oldwarn))
-			}
-			.Internal(warning(as.logical(call.), as.logical(immediate.),
-				.makeMessage(..., domain = domain)))
-		}
-	}, envir = TempEnv())
+	if (split) {
+		## This is required to print error messages when we are, say, in a
+		## browser() environment
+		sink(stdout(), type = "message")
+	} else {
+		## This is the conventional way to do it
+		sink(tconn, type = "message")
+	}
+	sink(tconn, type = "output", split = split)
+	#sink(tconn, type = "message")
 	on.exit({
+		sink(type = "message")
 		sink(type = "output")
-		close(file)
-		if (exists("warning", envir = TempEnv(), inherits = FALSE))
-			rm("warning", envir = TempEnv())
+		close(tconn)
 	})
 
-	evalVis <- function (Expr)
-	{
-		## We need to install our own warning handling
-		## and also, we use a customized interrupt handler
-		owarns <- getOption("warning.expression")
-		## Inactivate current warning handler
-		options(warning.expression = expression())
-		## ... and make sure it is restored at the end
-		on.exit({
-			## Check that the warning.expression was not changed
-			nwarns <- getOption("warning.expression")
-			if (!is.null(nwarns) && length(as.character(nwarns)) == 0)
-				options(warning.expression = owarns)
-		})
-		## Evaluate instruction(s) in the user workspace (.GlobalEnv)
-		res <- try(withCallingHandlers(withVisible(eval(Expr, .GlobalEnv)),
-			warning = function (e) {
-				msg <- conditionMessage(e)
-				call <- conditionCall(e)
+	inStdOut <- TRUE
 
-				## Possibly truncate it
-				wl <- getOption("warning.length")
-				if (is.null(wl)) wl <- 1000 # Default value
-				if (nchar(msg) > wl)
-					msg <- paste(substr(msg, 1, wl), .gettext("[... truncated]"))
-
-				## Result depends upon 'warn'
-				Warn <- getOption("warn")
-
-				## If warning generated in eval environment, make it NULL
-				try(if (!is.null(call)  && !is.symbol(call) &&
-					identical(call[[1L]], quote(eval)))
-					e$call <- NULL, silent = TRUE)
-
-				if (Warn < 0) { # Do nothing!
-					return()
-				} else if (Warn == 0) { # Delayed display of warnings
-					if (exists("warns", envir = TempEnv())) {
-						lwarn <- get("warns", envir = TempEnv())
-					} else lwarn <- list()
-					## Do not add more than 50 warnings
-					if (length(lwarn) >= 50) return()
-
-					## Add the warning to this list and save in TempEnv()
-					assign("warns", append(lwarn, list(e)), envir = TempEnv())
-
-					return()
-				} else if (Warn > 1) { # Generate an error!
-					msg <- .gettextf("(converted from warning) %s", msg)
-					stop(simpleError(msg, call = call))
-				} else {
-					## warn = 1
-					## Print the warning message immediately
-					## Format the warning message
-
-					## This is modified code from base::try
-					if (!is.null(call)) {
-						dcall <- deparse(call)[1L]
-						prefix <- paste(.gettext("Warning in"), dcall, ": ")
-						LONG <- 75L
-						sm <- strsplit(msg, "\n")[[1L]]
-						w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")
-						if (is.na(w)) 
-							w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L], type = "b")
-						if (w > LONG)
-							prefix <- paste(prefix, "\n  ", sep = "")
-					} else prefix <- .gettext("Warning : ")
-
-					msg <- paste(prefix, msg, "\n", sep="")
-					cat(msg)
+	if (isTRUE(markStdErr)) {
+		putMark <- function (toStdout, id) {
+			if (inStdOut) {
+				if (!toStdout) {
+					cat("\x03")
+					inStdOut <<- FALSE
+				}
+			} else { # in StdErr stream
+				if (toStdout) {
+					cat("\x02")
+					inStdOut <<- TRUE
 				}
 			}
-			, interrupt = function (i) cat(.gettext("<INTERRUPTED!>\n"))
-			## This is modified code from base::try
-			, error = function(e) {
-				call <- conditionCall(e)
-				msg <- conditionMessage(e)
-
-				## Patch up the call to produce nicer result for testing as
-				## try(stop(...)).  This will need adjusting if the
-				## implementation of tryCatch changes.
-				## Use identical() since call[[1]] can be non-atomic.
-				try(if (!is.null(call) && !is.symbol(call) &&
-					identical(call[[1L]], quote(eval)))
-					call <- NULL, silent = TRUE)
-				if (!is.null(call)) {
-					dcall <- deparse(call)[1L]
-					prefix <- paste(.gettext("Error in "), dcall, ": ")
-					LONG <- 75L
-					sm <- strsplit(msg, "\n")[[1L]]
-					w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")
-					if (is.na(w)) 
-						w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L], type = "b")
-					if (w > LONG) 
-						prefix <- paste(prefix, "\n  ", sep = "")
-				} else prefix <- .gettext("Error : ")
-
-				msg <- paste(prefix, msg, "\n", sep = "")
-				## Store the error message for legacy uses of try() with
-				## geterrmessage().
-				.Internal(seterrmessage(msg[1L]))
-				if (identical(getOption("show.error.messages"), TRUE))
-					cat(msg)
-			}
-			, message = function(e) {
-				signalCondition(e)
-				cat(conditionMessage(e))
-			}
-		), silent = TRUE)
-		## Possibly add 'last.warning' as attribute to res
-		if (exists("warns", envir = TempEnv())) {
-			warns <- get("warns", envir = TempEnv())
-
-			## Reshape the warning list
-			last.warning <- lapply(warns, "[[", "call")
-			names(last.warning) <- sapply(warns, "[[", "message")
-
-			attr(res, "last.warning") <- last.warning
-			rm("warns", envir = TempEnv())
+			#cat("<", id, inStdOut, ">")
 		}
+	} else {
+		putMark <- function (toStdout, id) {}
+	}
+
+	evalVis <- function (x) {
+		## Do we print the command? (note that it is reformatted here)
+		if (isTRUE(echo)) {
+			## Reformat long commands... and possibly abbreviate them
+			cmd <- deparse(x)
+			l <- length(cmd)
+			if (l > 7) cmd <- c(cmd[1:3], "[...]", cmd[(l-2):l])
+			cat(":> ", paste(cmd, collapse = "\n:+ "), "\n", sep = "")
+		}
+		res <- withVisible(eval(x, .GlobalEnv))
+		## Do we have result to print?
+		if (inherits(res, "list") && res$visible) {
+			## Printing is veeery slow on Windows when split = TRUE
+			## => unsplit temporarily, and print twice instead!
+			#print(res$value)
+			
+			if (split == TRUE) {
+				sink(type = "message")
+				sink(type = "output")
+				## Print first to the console
+				try(print(res$value))
+				sink(tconn, type = "message")
+				sink(tconn, type = "output", split = FALSE)
+				## Print a second time to the connection
+				try(print(res$value))
+				## Resink with split = TRUE
+				sink(type = "message")
+				sink(type = "output")
+				sink(stdout(), type = "message")
+				sink(tconn, type = "output", split = TRUE)
+			} else {
+				## This is the conventional way to do it
+				print(res$value)	
+			}	
+		}
+		
 		return(res)
 	}
 
-	## This is my own function to display delayed warnings
-	WarningMessage <- function (last.warning)
-	{
-		assign("last.warning", last.warning, envir = baseenv())
-		n.warn <- length(last.warning)
-		if (n.warn < 11) {	# If less than 11 warnings, print them
-			## For reasons I don't know, R append a white space to the warning
-			## messages... we replicate this behaviour here.
-			print.warnings(warnings(" ", sep = ""))
-		} else if (n.warn >= 50) {
-			cat(.gettext("There were 50 or more warnings (use warnings() to see the first 50)\n"))
-		} else {
-			cat(.gettextf("There were %d warnings (use warnings() to see them)\n",
-				n.warn))
-		}
-		return(invisible(n.warn))
+	formatMsg <- function (msg) {
+		## For some reasons, 'Error: ' and 'Error in ' are not translated,
+		## although the rest of the message is correctly translated
+		## This is a workaround for this little problem
+		res <- .makeMessage(msg)
+		res <- sub("^Error: ", ngettext(1, "Error: ", "Error: ", domain = "R"),
+			res)
+		res <- sub("^Error in ", ngettext(1, "Error in ", "Error in ",
+			domain = "R"), res)
+		return(res)
 	}
 
-	for (i in 1:length(expr)) {
-		tmp <- evalVis(expr[[i]])
-		if (inherits(tmp, "try-error")) {
-			last.warning <- attr(tmp, "last.warning")
-			if (!is.null(last.warning)) {
-				cat(.gettext("In addition : "))
-				WarningMessage(last.warning)
+	restartError <- function (e, calls) {
+		## Remove call (eval(expr, envir, enclos)) from the message
+		ncls <- length(calls)
+
+		##DEBUG: cat("n calls: ", ncls, "NframeOffset: ", NframeOffset, "\n")
+		if (isTRUE(all.equal(calls[[NframeOffset]], e$call,
+			check.attributes = FALSE)))
+			e$call <- NULL
+
+		Traceback <<- rev(calls[-c(seq.int(NframeOffset), (ncls - 1L):ncls)])
+
+#> cat(captureAll(expression(1:10, log(-1),log(""),1:10)), sep="\n")
+#Error in calls[[NframeOffset]]: subscript out of bounds
+#Warning message:
+#In log(-1) : NaNs produced
+
+		putMark(FALSE, 1)
+		cat(formatMsg(e))
+		if (getWarnLev() == 0L && length(last.warning) > 0L)
+			cat(ngettext(1, "In addition: ", "In addition: ", domain = "R"))
+	}
+
+	res <- tryCatch(withRestarts(withCallingHandlers({
+			## TODO: allow for multiple expressions and calls (like in
+			## 'capture.output'). The problem here is how to tell 'expression'
+			## from 'call' without evaluating it?
+			##list(evalVis(expr))
+			lapply(expr, evalVis)
+		},
+
+		error = function (e) invokeRestart("grmbl", e, sys.calls()),
+		warning = function (e) {
+			## Remove call (eval(expr, envir, enclos)) from the message
+			if (isTRUE(all.equal(sys.call(NframeOffset), e$call,
+				check.attributes = FALSE)))
+				e$call <- NULL
+
+			last.warning <<- c(last.warning, structure(list(e$call),
+				names = e$message))
+
+			if (getWarnLev() != 0L) {
+				putMark(FALSE, 2)
+				.Internal(.signalCondition(e, conditionMessage(e),
+					conditionCall(e)))
+				.Internal(.dfltWarn(conditionMessage(e), conditionCall(e)))
+				putMark(TRUE, 3)
 			}
-			break
-	   	} else {	 # No error
-			if (tmp$visible) print(tmp$value)
-			last.warning <- attr(tmp, "last.warning")
-			if (!is.null(last.warning))
-				WarningMessage(last.warning)
+			invokeRestart("muffleWarning")
+		}),
+		## Restarts:
+
+		## Handling user interrupts. Currently it works only from within R.
+		##TODO: how to trigger interrupt via socket connection?
+		abort = function (...) {
+			putMark(FALSE, 4)
+			cat("<aborted!>\n") #DEBUG
+		},
+
+		interrupt = function (...) cat("<interrupted!>\n"), #DEBUG: this does not seem to be ever called.
+
+		muffleWarning = function () NULL,
+		grmbl = restartError),
+		error = function (e) { ##XXX: this is called if warnLevel == 2
+			putMark(FALSE, 5)
+			cat(formatMsg(e))
+			e #identity
+		},
+		finally = {}
+	)
+
+	if (getWarnLev() == 0L) {
+		nwarn <- length(last.warning)
+		assign("last.warning", last.warning, envir = baseenv())
+
+		if (nwarn > 0L) putMark(FALSE, 6)
+		if (nwarn <= 10L) {
+			print.warnings(last.warning)
+		} else if (nwarn < 50L) {
+			## This is buggy and does not retrieve a translation of the message!
+			#cat(gettextf("There were %d warnings (use warnings() to see them)\n",
+			#	nwarn, domain = "R"))
+			msg <- ngettext(1,
+				"There were %d warnings (use warnings() to see them)\n",
+				"There were %d warnings (use warnings() to see them)\n",
+				domain = "R")
+			cat(sprintf(msg, nwarn))		      
+		} else {
+			cat(ngettext(1,
+				"There were 50 or more warnings (use warnings() to see the first 50)\n",
+				"There were 50 or more warnings (use warnings() to see the first 50)\n",
+				domain = "R"))
 		}
 	}
-	cat("\n")   # In case last line does not end with \n, I add it!
+
+	putMark(TRUE, 7)
+
+	sink(type = "message")
+	sink(type = "output")
+	close(tconn)
+	on.exit()
+
+	## Allow for tracebacks of this call stack:
+	assign(".Traceback", lapply(Traceback, deparse), envir = baseenv())
+
+	## Make sure last line ends up with \n
+	l <- length(rval)
+	if (l) rval[l] <- paste(rval[l], "\n", sep = "")
 	return(rval)
 }
-
