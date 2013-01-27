@@ -4,8 +4,8 @@ Complete <- function (code, print = FALSE, types = c("default", "scintilla"),
 addition = FALSE, skip.used.args = TRUE, sep = "\n", type.sep = "?")
 {
 	.Deprecated("completion")
-	return(completion(code, print = print, types = types, addition = addition,
-		skip.used.args = skip.used.args, sep = sep, field.sep = type.sep))
+	completion(code, print = print, types = types, addition = addition,
+		skip.used.args = skip.used.args, sep = sep, field.sep = type.sep)
 }
 
 CompletePlus <- function (linebuffer, cursorPosition = nchar(linebuffer),
@@ -118,8 +118,8 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 				} else packs <- .find.multiple(funs)
 				desc.fun <- rep("", length(packs))
 				## Do not try to find description for functions in those envs
-				isPack <- !packs %in% c("", ".GlobalEnv", "TempEnv", "Autoloads",
-					"tools:RGUI")
+				isPack <- !packs %in% c("", ".GlobalEnv", "SciViews:TempEnv",
+					"Autoloads", "tools:RGUI")
 				## The following code is too slow for many function
 				## (it takes 6-7sec for the 1210 base:::XXXX functions)
 				## So, do it only if less than max.fun
@@ -278,7 +278,7 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 	## Finalize processing of the completion list
 	funargs <- ComplEnv$funargs
 	isFirstArg <- ComplEnv$isFirstArg
-	return(finalize(completions))
+	finalize(completions)
 }
 
 .reserved.words <- c("if", "else", "repeat", "while", "function", "for", "in",
@@ -293,7 +293,7 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 
 ## Modified utils:::inFunction()
 ## (checked equivalent with R 2.11.1)
-## The only difference is that it also gets current arguments list (if applicable).
+## Only difference: it also gets current arguments list (if applicable).
 ## They are assigned to utils:::.CompletionEnv$funargs
 .inFunctionExt <-
 function (line = utils:::.CompletionEnv[["linebuffer"]],
@@ -450,5 +450,5 @@ cursor = utils:::.CompletionEnv[["start"]])
         if (all(out != "")) break
     }
     names(out) <- what
-    return(sub("^package:", "", out))
+    sub("^package:", "", out)
 }

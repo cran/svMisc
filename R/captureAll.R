@@ -1,7 +1,8 @@
 ## Inspired by 'capture.output' and utils:::.try_silent
 ## Requires: R >= 2.13.0 [??]
-`captureAll` <- function (expr, split = TRUE, echo = TRUE, file = NULL,
-markStdErr = FALSE) {
+captureAll <- function (expr, split = TRUE, echo = TRUE, file = NULL,
+markStdErr = FALSE)
+{
 	if (!is.expression(expr))
 		if (is.na(expr)) return(NA) else
 		stop("expr must be an expression or NA")
@@ -76,15 +77,15 @@ markStdErr = FALSE) {
 			## => unsplit temporarily, and print twice instead!
 			#print(res$value)
 			
-			if (split == TRUE) {
+			if (split) {
 				sink(type = "message")
 				sink(type = "output")
 				## Print first to the console
-				try(print(res$value))
+				try(print(res$value), silent = TRUE)
 				sink(tconn, type = "message")
 				sink(tconn, type = "output", split = FALSE)
 				## Print a second time to the connection
-				try(print(res$value))
+				try(print(res$value), silent = TRUE)
 				## Resink with split = TRUE
 				sink(type = "message")
 				sink(type = "output")
