@@ -1,6 +1,6 @@
-3463b72f0a560a831cda44cc8f0958e9 *DESCRIPTION
+7b8f99137e987a1cc9acb1b5c0e068a1 *DESCRIPTION
 bf7805f012864c11d7d3814128ad861d *NAMESPACE
-9597893a1e4647173ed73c6e310abc06 *NEWS
+529af2fe915561e246deff821d314291 *NEWS
 8ac3f18e9abfcb64b2959ba30db1ea9e *R/TempEnv.R
 43d18ccbad9bc9840f2bd4cef7a1347f *R/addItems.R
 ebe54a286e940637b6e3234e159a53fd *R/addTemp.R
@@ -21,7 +21,7 @@ ccdc33afed8d38a997332cf77b0c4cfa *R/compareRVersion.R
 5f2e881e1ae57e15d2f425b64bf5df1d *R/guiCmd.R
 cc2a9de4f52362917eabec1273d33d8c *R/helpSearchWeb.R
 17ad3d566fcb7163895d3e10a218844c *R/isAqua.R
-ee1e77f5c89285ce44581f3af36aac9f *R/isHelp.R
+5d7dedf0139dbf099cef50be991c1658 *R/isHelp.R
 8fc4bc3a134e32cbeea7896ff5a6e993 *R/isJGR.R
 1d35a4d64c19fa005be22be924a9188d *R/isMac.R
 40a1ae6341172ede724cdffa7a6bb4e2 *R/isRgui.R
@@ -94,7 +94,7 @@ f592aec96e52d286d11528f76f04f3a7 *man/progress.Rd
 a65eaf64e7fd40b4edc7a6c704c8acf5 *man/rjson.Rd
 06008c716506aae9146cddd907b0a71b *man/rmTemp.Rd
 de504bf07752c02764c9c48e7108ab19 *man/sourceClipboard.Rd
-39b67573a83055e7373f5bc5c16fce83 *man/svMisc-package.Rd
+c94f115702cd7aa5d62eb0e22b2544a8 *man/svMisc-package.Rd
 bff04b5f22774fe65f794270e665adae *man/systemFile.Rd
 6664a93f3f0398f9149e9f45816df4bc *man/tempvar.Rd
 4804e17ba40a37e08899725516f1a8d9 *man/unitTests.svMisc.Rd
