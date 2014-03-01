@@ -1,29 +1,3 @@
-## TODO: activate rc.settings(ipck = TRUE) and rc.settings(files = TRUE)
-
-Complete <- function (code, print = FALSE, types = c("default", "scintilla"),
-addition = FALSE, skip.used.args = TRUE, sep = "\n", type.sep = "?")
-{
-	.Deprecated("completion")
-	completion(code, print = print, types = types, addition = addition,
-		skip.used.args = skip.used.args, sep = sep, field.sep = type.sep)
-}
-
-CompletePlus <- function (linebuffer, cursorPosition = nchar(linebuffer),
-minlength = 2, simplify = FALSE, types = c("arguments", "functions", "packages"))
-{
-	.Deprecated("completion")
-	res <- completion(linebuffer, pos = cursorPosition, min.length = minlength,
-		print = FALSE, what = types, types = NA, addition = FALSE,
-		sort = FALSE, description = TRUE, max.fun = 10000,
-		skip.used.args = FALSE, field.sep = "\t")
-	if (is.character(res) && length(res) && res == "") return(NULL) else {
-		if (isTRUE(simplify)) {
-			cat(apply(res[, c("completion", "context", "desc")], 1, paste,
-				collapse = "\t"), sep = "\n")
-		} else return(res)
-	}
-}
-
 completion <- function (code, pos = nchar(code), min.length = 2,
 print = FALSE, types = c("default", "scintilla"), addition = FALSE, sort = TRUE,
 what = c("arguments", "functions", "packages"), description = FALSE,
@@ -65,7 +39,7 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 
 			## Deal with argument completions (ending with " = ")
 			if (length(test.arg <- grep(" = ", completions))) {
-				fun <- utils:::.CompletionEnv[["fguess"]]
+				fun <- getNamespace("utils")$.CompletionEnv[["fguess"]]
 				ret[test.arg, "context"] <- fun
 				ret[test.arg, "desc"] <- descArgs(fun,
 					sub(" = $", "", completions[test.arg]))	
@@ -82,7 +56,7 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 					package = pack)
 			}
 
-			## Deal with completions with "@" (excluding things like base:::$)
+			## Deal with completions with "@" (excluding things like base::$)
 			if (length(test.slot <- grep("[^:]@", completions))) {
 				elements <- completions[test.slot]
 				object <- gsub("@.*$", "", completions)[1]
@@ -121,7 +95,7 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 				isPack <- !packs %in% c("", ".GlobalEnv", "SciViews:TempEnv",
 					"Autoloads", "tools:RGUI")
 				## The following code is too slow for many function
-				## (it takes 6-7sec for the 1210 base:::XXXX functions)
+				## (it takes 6-7sec for the 1210 base::XXXX functions)
 				## So, do it only if less than max.fun
 				## Note, without descriptions, it takes 0.3sec on my MacBook Pro
 				if (length(isPack) < max.fun)
@@ -150,10 +124,8 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 					ret$context, sep = field.sep), sep = sep)
 			}
 			if (sep != "\n") cat("\n")
-			return(invisible(ret))
-		} else {
-			return(ret)
-		}
+			invisible(ret)
+		} else ret
 	}
 
 	## Do we return the type of the entry, and if yes, in which format?
@@ -196,7 +168,8 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 	} else dblBrackets <- FALSE
 	
 	## Save funarg.suffix and use " = " locally
-	ComplEnv <- utils:::.CompletionEnv
+	utilsNS <- getNamespace("utils")
+	ComplEnv <- utilsNS$.CompletionEnv
 	opts <- ComplEnv$options
 	funarg.suffix <- opts$funarg.suffix
 	on.exit({
@@ -207,12 +180,12 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 	ComplEnv$options <- opts
 
 	## Calculate completion with standard R completion tools
-	utils:::.assignLinebuffer(code)
-	utils:::.assignEnd(pos)
-	utils:::.guessTokenFromLine()
+	utilsNS$.assignLinebuffer(code)
+	utilsNS$.assignEnd(pos)
+	utilsNS$.guessTokenFromLine()
 	## The standard utils:::.completeToken() is replaced by our own version:
 	.completeTokenExt()
-	completions <- utils:::.retrieveCompletions()
+	completions <- utilsNS$.retrieveCompletions()
 	triggerPos <- pos - ComplEnv[["start"]]
 	token <- ComplEnv[["token"]]
 
@@ -296,9 +269,12 @@ max.fun = 100, skip.used.args = TRUE, sep = "\n", field.sep = "\t")
 ## Only difference: it also gets current arguments list (if applicable).
 ## They are assigned to utils:::.CompletionEnv$funargs
 .inFunctionExt <-
-function (line = utils:::.CompletionEnv[["linebuffer"]],
-cursor = utils:::.CompletionEnv[["start"]])
+function (line, cursor)
 {
+	utilsNS <- getNamespace("utils")
+	if (missing(line)) line <- utilsNS$.CompletionEnv[["linebuffer"]]
+	if (missing(cursor)) cursor <- utilsNS$.CompletionEnv[["start"]]
+		
 	parens <- sapply(c("(", ")"), function(s)
 		gregexpr(s, substr(line, 1L, cursor), fixed = TRUE)[[1L]],
 		simplify = FALSE)
@@ -315,7 +291,7 @@ cursor = utils:::.CompletionEnv[["start"]])
 		suffix <- substr(line, index + 1L, cursor + 1L)
 		if ((length(grep("=", suffix, fixed = TRUE)) == 0L) &&
 			(length(grep(",", suffix, fixed = TRUE)) == 0L))
-			utils:::setIsFirstArg(v = TRUE)
+			utilsNS$setIsFirstArg(v = TRUE)
 		if ((length(grep("=", suffix, fixed = TRUE))) && (length(grep(",",
 			substr(suffix, tail(gregexpr("=", suffix, fixed = TRUE)[[1L]],
 			1L), 1000000L), fixed = TRUE)) == 0L)) {
@@ -334,13 +310,13 @@ cursor = utils:::.CompletionEnv[["start"]])
 			}
 			funargs <- strsplit(funargs, "\\s*,\\s*", perl=TRUE)[[1]]
 			funargs <- unname(sapply(funargs, sub, pattern = "\\s*=.*$",
-				replacement = utils:::.CompletionEnv$options$funarg.suffix,
+				replacement = utilsNS$.CompletionEnv$options$funarg.suffix,
 					perl=TRUE))
-			assign("funargs", funargs, utils:::.CompletionEnv)
+			assign("funargs", funargs, utilsNS$.CompletionEnv)
 			## TODO: how to take non named arguments into account too?
 			## ... addition ends here
 
-			possible <- suppressWarnings(strsplit(prefix, utils:::breakRE,
+			possible <- suppressWarnings(strsplit(prefix, utilsNS$breakRE,
 				perl = TRUE))[[1L]]
 			possible <- possible[possible != ""]
 			if (length(possible)) {
@@ -359,24 +335,25 @@ cursor = utils:::.CompletionEnv[["start"]])
 ## Main difference is that calls .inFunctionExt instead of utils:::inFunction
 ## and it also makes sure completion is for Complete in 'Complete("anova(", )'!
 .completeTokenExt <- function () {
-	ComplEnv <- utils:::.CompletionEnv
+	utilsNS <- getNamespace("utils")
+	ComplEnv <- utilsNS$.CompletionEnv
 	text <- ComplEnv$token
 	linebuffer <- ComplEnv$linebuffer
 	st <- ComplEnv$start
 
-	if (utils:::isInsideQuotes()) {
+	if (utilsNS$isInsideQuotes()) {
 		probablyNotFilename <- (st > 2L &&
 			(substr(linebuffer, st - 1L, st - 1L) %in% c("[", ":", "$")))
 		if (ComplEnv$settings[["files"]]) {
 			if (probablyNotFilename) {
 				ComplEnv[["comps"]] <- character(0L)
 			} else {
-				ComplEnv[["comps"]] <- utils:::fileCompletions(text)
+				ComplEnv[["comps"]] <- utilsNS$fileCompletions(text)
 			}
-			utils:::.setFileComp(FALSE)
+			utilsNS$.setFileComp(FALSE)
 		} else {
 			ComplEnv[["comps"]] <- character(0L)
-			utils:::.setFileComp(TRUE)
+			utilsNS$.setFileComp(TRUE)
 		}
 	} else {
 
@@ -395,8 +372,8 @@ cursor = utils:::.CompletionEnv[["start"]])
 		}
 		## ... additions until here
 
-		utils:::.setFileComp(FALSE)
-		utils:::setIsFirstArg(FALSE)
+		utilsNS$.setFileComp(FALSE)
+		utilsNS$setIsFirstArg(FALSE)
 		guessedFunction <- ""
 		if (ComplEnv$settings[["args"]]) {
 			## Call of .inFunctionExt() instead of utils:::inFunction()
@@ -406,9 +383,9 @@ cursor = utils:::.CompletionEnv[["start"]])
 		}
 
 		assign("fguess", guessedFunction, ComplEnv)
-		fargComps <- utils:::functionArgs(guessedFunction, text)
+		fargComps <- utilsNS$functionArgs(guessedFunction, text)
 
-		if (utils:::getIsFirstArg() && length(guessedFunction) &&
+		if (utilsNS$getIsFirstArg() && length(guessedFunction) &&
 			guessedFunction %in% c("library", "require", "data")) {
 			assign("comps", fargComps, ComplEnv)
 			return()
@@ -418,15 +395,15 @@ cursor = utils:::.CompletionEnv[["start"]])
 			prefix <- substr(text, 1L, lastArithOp)
 			text <- substr(text, lastArithOp + 1L, 1000000L)
 		}
-		spl <- utils:::specialOpLocs(text)
+		spl <- utilsNS$specialOpLocs(text)
 		if (length(spl)) {
-			comps <- utils:::specialCompletions(text, spl)
+			comps <- utilsNS$specialCompletions(text, spl)
 		} else {
 			appendFunctionSuffix <- !any(guessedFunction %in%
 				c("help", "args", "formals", "example", "do.call",
 				"environment", "page", "apply", "sapply", "lapply",
 				"tapply", "mapply", "methods", "fix", "edit"))
-			comps <- utils:::normalCompletions(text,
+			comps <- utilsNS$normalCompletions(text,
 				check.mode = appendFunctionSuffix)
 		}
 		if (haveArithOp && length(comps))

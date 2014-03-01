@@ -1,4 +1,4 @@
-## Inspired by 'capture.output' and utils:::.try_silent
+## Inspired by 'capture.output' and the old .try_silent in utils package
 ## Requires: R >= 2.13.0 [??]
 captureAll <- function (expr, split = TRUE, echo = TRUE, file = NULL,
 markStdErr = FALSE)
@@ -220,5 +220,5 @@ markStdErr = FALSE)
 	## Make sure last line ends up with \n
 	l <- length(rval)
 	if (l) rval[l] <- paste(rval[l], "\n", sep = "")
-	return(rval)
+	rval
 }
