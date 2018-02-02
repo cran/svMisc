@@ -1,5 +1,15 @@
 = svMisc To Do list
 
+* For install(), allow to specify the list of packages in ..., but how to
+  specify installation arguments then? Also, allows to specify from where to
+  install the packages (github, etc. should be also accepted).
+
+* A function derived from import::from(), but that populates
+  .packages_to_install; idem for '::', ':::', library() and require().
+
+* A liste of (remote) sources for packages to install from github, bitbucket,
+  etc. + a list of dependencies and code to run to install these.
+
 * Finalize the actions management
 
 * Specification of dates in RJSON format
