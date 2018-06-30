@@ -1,7 +1,7 @@
 Package: svMisc
 Type: Package
-Version: 1.0-2
-Date: 2018-02-21
+Version: 1.1.0
+Date: 2018-06-10
 Title: SciViews - Miscellaneous Functions
 Description: Miscellaneous functions for SciViews or general use: manage a
   temporary environment attached to the search path for temporary variables you
@@ -24,9 +24,9 @@ BugReports: https://github.com/SciViews/svMisc/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-02-21 19:22:10 UTC; phgrosjean
+Packaged: 2018-06-27 13:02:33 UTC; phgrosjean
 Author: Philippe Grosjean [aut, cre],
   Romain Francois [ctb],
   Kamil Barton [ctb]
 Repository: CRAN
-Date/Publication: 2018-02-21 23:09:57 UTC
+Date/Publication: 2018-06-30 17:04:09 UTC
