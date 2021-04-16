@@ -4,8 +4,14 @@
 \alias{batch}
 \title{Run a function in batch mode}
 \usage{
-batch(items, fun, ..., show.progress = !is_aqua() && !is_jgr(),
-  suppress.messages = show.progress, verbose = TRUE)
+batch(
+  items,
+  fun,
+  ...,
+  show.progress = !is_aqua() && !is_jgr(),
+  suppress.messages = show.progress,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{items}{The items (usually, arguments vector of character strings) on
@@ -19,7 +25,7 @@ warnings or messages to be a good candidate, batchable, function).}
 \item{show.progress}{Do we show progression as item x on y... message? This
 uses the \code{\link[=progress]{progress()}} function.}
 
-\item{suppress.messages}{Are messages from the batcheable function suppressed?
+\item{suppress.messages}{Are messages from the batchable function suppressed?
 Only warnings will be issued. Recommended if \code{show.progress = TRUE}.}
 
 \item{verbose}{Display start and end messages if \code{TRUE} (default).}
@@ -33,7 +39,7 @@ A function can be run in batch mode if it never fails (replace
 errors by warnings) and returns \code{TRUE} in case of success, or \code{FALSE} otherwise.
 }
 \examples{
-# Here is a fake batcheable process
+# Here is a fake batchable process
 fake_process <- function(file) {
   message("Processing ", file, "...")
   flush.console()
@@ -51,7 +57,5 @@ batch(files, fake_process)
 \seealso{
 \code{\link[=progress]{progress()}}
 }
-\concept{
-batch processing
-}
+\concept{batch processing}
 \keyword{utilities}

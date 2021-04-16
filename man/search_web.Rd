@@ -5,11 +5,9 @@
 \alias{helpSearchWeb}
 \title{Search web documents about R and R functions}
 \usage{
-search_web(what, type = c("R", "google"), browse = TRUE, msg = browse,
-  ...)
+search_web(what, type = c("R", "google"), browse = TRUE, msg = browse, ...)
 
-helpSearchWeb(what, type = c("R", "google"), browse = TRUE, msg = browse,
-  ...)
+helpSearchWeb(what, type = c("R", "google"), browse = TRUE, msg = browse, ...)
 }
 \arguments{
 \item{what}{The string(s) to search. In case of several strings, or several
@@ -47,8 +45,5 @@ search_web("volatility", type = "google")   # Google search
 }
 \seealso{
 \code{\link[=RSiteSearch]{RSiteSearch()}}, \code{\link[=help.search]{help.search()}}
-}
-\concept{
-search help engine archive, google
 }
 \keyword{utilities}

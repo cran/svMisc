@@ -19,9 +19,16 @@
 \alias{objMenu}
 \title{Functions to implement an object browser}
 \usage{
-obj_browse(id = "default", envir = .GlobalEnv, all.names = NULL,
-  pattern = NULL, group = NULL, sep = "\\t", path = NULL,
-  regenerate = FALSE)
+obj_browse(
+  id = "default",
+  envir = .GlobalEnv,
+  all.names = NULL,
+  pattern = NULL,
+  group = NULL,
+  sep = "\\t",
+  path = NULL,
+  regenerate = FALSE
+)
 
 obj_clear(id = "default")
 
@@ -29,23 +36,51 @@ obj_dir()
 
 obj_info(id = "default", envir = .GlobalEnv, object = "", path = NULL)
 
-obj_list(id = "default", envir = .GlobalEnv, object = NULL,
-  all.names = FALSE, pattern = "", group = "", all.info = FALSE,
-  sep = "\\t", path = NULL, compare = TRUE, ...)
+obj_list(
+  id = "default",
+  envir = .GlobalEnv,
+  object = NULL,
+  all.names = FALSE,
+  pattern = "",
+  group = "",
+  all.info = FALSE,
+  sep = "\\t",
+  path = NULL,
+  compare = TRUE,
+  ...
+)
 
 write.objList(x, path, sep = "\\t", ...)
 
-\method{print}{objList}(x, sep = NA, eol = "\\n", header = !attr(x,
-  "all.info"), raw.output = !is.na(sep), ...)
+\method{print}{objList}(
+  x,
+  sep = NA,
+  eol = "\\n",
+  header = !attr(x, "all.info"),
+  raw.output = !is.na(sep),
+  ...
+)
 
 obj_search(sep = "\\t", path = NULL, compare = TRUE)
 
-obj_menu(id = "default", envir = .GlobalEnv, objects = "", sep = "\\t",
-  path = NULL)
+obj_menu(
+  id = "default",
+  envir = .GlobalEnv,
+  objects = "",
+  sep = "\\t",
+  path = NULL
+)
 
-objBrowse(id = "default", envir = .GlobalEnv, all.names = NULL,
-  pattern = NULL, group = NULL, sep = "\\t", path = NULL,
-  regenerate = FALSE)
+objBrowse(
+  id = "default",
+  envir = .GlobalEnv,
+  all.names = NULL,
+  pattern = NULL,
+  group = NULL,
+  sep = "\\t",
+  path = NULL,
+  regenerate = FALSE
+)
 
 objClear(id = "default")
 
@@ -53,14 +88,29 @@ objDir()
 
 objInfo(id = "default", envir = .GlobalEnv, object = "", path = NULL)
 
-objList(id = "default", envir = .GlobalEnv, object = NULL,
-  all.names = FALSE, pattern = "", group = "", all.info = FALSE,
-  sep = "\\t", path = NULL, compare = TRUE, ...)
+objList(
+  id = "default",
+  envir = .GlobalEnv,
+  object = NULL,
+  all.names = FALSE,
+  pattern = "",
+  group = "",
+  all.info = FALSE,
+  sep = "\\t",
+  path = NULL,
+  compare = TRUE,
+  ...
+)
 
 objSearch(sep = "\\t", path = NULL, compare = TRUE)
 
-objMenu(id = "default", envir = .GlobalEnv, objects = "", sep = "\\t",
-  path = NULL)
+objMenu(
+  id = "default",
+  envir = .GlobalEnv,
+  objects = "",
+  sep = "\\t",
+  path = NULL
+)
 }
 \arguments{
 \item{id}{The id of the object browser (you can run several ones
@@ -120,7 +170,7 @@ These functions provide features required to implement a
 complete object browser in a GUI client.
 }
 \details{
-\code{obj_browse()} does the horsework. \code{obj_dir()} gets the temporary
+\code{obj_browse()} does the horse work. \code{obj_dir()} gets the temporary
 directory where exchange files with the GUI client are stored, in case you
 exchange data through files. You can use a better way to communicate with
 your GUI (you have to provide your code) and disable writing to files by
@@ -171,8 +221,5 @@ rm(iris, trees)
 \author{
 Philippe Grosjean \href{mailto:phgrosjean@sciviews.org}{phgrosjean@sciviews.org} &
 Kamil Barton \href{mailto:kamil.barton@uni-wuerzburg.de}{kamil.barton@uni-wuerzburg.de}
-}
-\concept{
-graphical user interface (GUI), object explorer
 }
 \keyword{misc}

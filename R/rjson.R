@@ -10,11 +10,11 @@
 #' containing C pointers, environments, promises or expressions, but should
 #' work with almost all other \R objects).
 #' @param attributes If `FALSE` (by default), a simple object is created by
-#' ignoring all attributes. This is usally the suitable option to transfer data
+#' ignoring all attributes. This is usually the suitable option to transfer data
 #' to another language, like JavaScript that do not understand R attributes
 #' anyway. With `attributes = TRUE`, the complete information about the object
 #' is written, so that the object could be recreated (almost) identical when
-#' evaluated in \R (but prefer [save()] and [load()] to tranfer objects between
+#' evaluated in \R (but prefer [save()] and [load()] to transfer objects between
 #' \R sessions!).
 #' @param rjson A string containing an object specified in RJSON notation. The
 #' specification is evaluated in \R... and it can contain also R code. There is
@@ -40,7 +40,7 @@
 #' not very easy to interpret in \R and the existing implementations can convert
 #' only specified objects (simple objects, lists, data frames, ...).
 #'
-#' RJSON slighly modifies and enhances JSON to make it: (1) more complete to
+#' RJSON slightly modifies and enhances JSON to make it: (1) more complete to
 #' represent almost any \R object (except objects with pointers, environments,
 #' ..., of course), and (2) to make it very easy to parse and evaluate in both
 #' \R and JavaScript (and probably many other) languages.
@@ -65,7 +65,6 @@
 #' @export
 #' @seealso [parse_text()]
 #' @keywords utilities
-#' @concept object serialization, JavaScript Object Notation
 #' @examples
 #' # A complex R object
 #' obj <- structure(list(
@@ -109,8 +108,8 @@ to_rjson <- function(x, attributes = FALSE) {
   # This is derived from dput()
   file <- file()
   on.exit(close(file))
-  # Martin Maechler suggested 'niceNames' used fro R >= 3.5.0
-  opts <- c(if (getRversion() >= "3.5") "niceNames",
+  # Martin Maechler suggested 'niceNames' used from R >= 3.5.0
+  opts <- c("digits17", if (getRversion() >= "3.5") "niceNames",
     if (isTRUE(attributes)) "showAttributes", "S_compatible")
 
   # Non-named list items are not allowed => make sure we give names to these
@@ -209,7 +208,8 @@ to_rjson <- function(x, attributes = FALSE) {
   res <- gsub('"?`@&#&&', '"', res)
   res <- gsub('&&#&@`\"? =', '" :=', res)
   # Convert "@&#&&[[d]]&&#&@" to "" (non-named items)
-  res <- gsub('"@&#&&\\[\\[[1-9][0-9]*]]&&#&@"', '""', res)
+  #res <- gsub('"@&#&&\\[\\[[1-9][0-9]*]]&&#&@"', '""', res)
+  res <- gsub('"\\[\\[[1-9][0-9]*]]" :=', '"" :=', res)
   # Convert "@&#&& into " and &&#&@" into "
   res <- gsub('"@&#&&', '"', res, fixed = TRUE)
   res <- gsub('&&#&@"', '"', res, fixed = TRUE)
@@ -229,7 +229,7 @@ to_rjson <- function(x, attributes = FALSE) {
 #' @rdname to_rjson
 eval_rjson <- function(rjson) {
   # Our list() manages to create list() but also new() or structure() items
-  list <- function(Class_, Data_, ...) {
+  list <- function(..., Class_, Data_) {
     # If there is a "Class_" argument, create new S4 object
     # Note that "Data_" is ignored in this case!
     if (!missing(Class_))
@@ -246,8 +246,10 @@ eval_rjson <- function(rjson) {
   # providing the <callback>() exists and can manage a single
   # argument (being the RJSOn object converted to R)
 
-  # We need first to convert all ':=' into '='
-  eval(parse(text = gsub(":=", "=", rjson, fixed = TRUE)))
+  # We need first to convert all '"" := ' into nothing and ':=' into '='
+  rjson <- gsub('"" := ', "", rjson, fixed = TRUE)
+  rjson <- gsub(":=", "=", rjson, fixed = TRUE)
+  eval(parse(text = rjson))
 }
 
 #' @export

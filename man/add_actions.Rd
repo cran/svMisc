@@ -11,8 +11,14 @@
 \title{Add GUI elements like actions (menu items), icons, or methods in a predefined
 list}
 \usage{
-add_actions(obj = get_actions(), text = NULL, code = NULL, state = NULL,
-  options = NULL, replace = TRUE)
+add_actions(
+  obj = get_actions(),
+  text = NULL,
+  code = NULL,
+  state = NULL,
+  options = NULL,
+  replace = TRUE
+)
 
 get_actions()
 
@@ -20,8 +26,14 @@ add_icons(obj = ".svIcons", icons, replace = TRUE)
 
 add_methods(methods)
 
-addActions(obj = get_actions(), text = NULL, code = NULL, state = NULL,
-  options = NULL, replace = TRUE)
+addActions(
+  obj = get_actions(),
+  text = NULL,
+  code = NULL,
+  state = NULL,
+  options = NULL,
+  replace = TRUE
+)
 
 addIcons(obj = ".svIcons", icons, replace = TRUE)
 
@@ -35,10 +47,10 @@ lines).}
 
 \item{code}{The R code of actions to add.}
 
-\item{state}{The default (intial) state of an action, as a succession of
+\item{state}{The default (initial) state of an action, as a succession of
 letters: \code{c} = checked, \code{u} = unchecked (default); \code{d} = disabled,
 \code{e} = enabled (default); \code{h} = hidden, \code{v} = visible (default). Default
-values are facultative. Ex: \code{udv} means: unchecked - disabled - visible and
+values are optional. Ex: \code{udv} means: unchecked - disabled - visible and
 it equals to simply \code{d}, given the defaults for the other properties.}
 
 \item{options}{A character vector with other options to pass to the graphical
@@ -64,7 +76,5 @@ Manage lists of GUI actions, icons and methods.
 \seealso{
 \code{\link[=add_items]{add_items()}}, \code{\link[=obj_menu]{obj_menu()}}, \code{\link[=temp_env]{temp_env()}}
 }
-\concept{
-list of GUI elements
-}
+\concept{list of GUI elements}
 \keyword{utilities}

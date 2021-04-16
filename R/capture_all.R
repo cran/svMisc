@@ -14,7 +14,7 @@
 #' @param echo Do we echo each expression in front of the results (like in the
 #' console)? In case the expression spans on more than 7 lines, only first and
 #' last three lines are echoed, separated by `[...]`.
-#' @param file A file, or a valid opened connection where output is sinked. It
+#' @param file A file, or a valid opened connection where output is sunk. It
 #' is closed at the end, and the function returns `NULL` in this case. If
 #' `file = NULL` (by default), a `textConnection()` captures the output and it
 #' is returned as a character string by the function.
@@ -23,13 +23,16 @@
 #' @return Returns a string with the result of the evaluation done in the user
 #' workspace.
 #' @note If the expression is provided as a character string that should be
-#' evaluated, and you need a similar behaviour as at the prompt for incomplete
+#' evaluated, and you need a similar behavior as at the prompt for incomplete
 #' lines of code (that is, to prompt for more), you should not parse the
 #' expression with `parse(text = "<some_code>")` because it returns an error
 #' instead of an indication of an incomplete code line. Use
 #' `parse_text("<some_code>")` instead, like in the examples bellow.
 #' Of course, you have to deal with incomplete line management in your GUI/CLI
 #' application... the function only returns `NA` instead of a character string.
+#' Starting from version 1.1.3, `.Traceback` is not set any more in the base
+#' environment, but it is `.Traceback_capture_all` that is set in `temp_env()`.
+#' You can get its value with `get_temp(".Traceback_capture_all")`.
 #' @export
 #' @seealso [parse()], [expression()], [capture.output()]
 #' @keywords IO
@@ -270,7 +273,7 @@ markStdErr = FALSE) {
   on.exit()
 
   # Allow for tracebacks of this call stack:
-  assign(".Traceback", lapply(Traceback, deparse), envir = baseenv())
+  assign_temp(".Traceback_capture_all", lapply(Traceback, deparse))
 
   # Make sure last line ends up with \n
   l <- length(ret_val)

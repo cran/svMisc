@@ -22,7 +22,7 @@ the correct position in the file.}
 }
 \value{
 Returns an expression with the parsed code or \code{NA} if the last
-instruction is correct but incomplete, or an object of class'try-error' with
+instruction is correct but incomplete, or an object of class 'try-error' with
 the error message if the code is incorrect.
 }
 \description{
@@ -45,7 +45,7 @@ parse_text(c("1 + 1", "log(10)"))
 parse_text("log(")
 
 # Incomplete strings
-parse_text("text <- \\"some string")
+parse_text("text <- \"some string")
 parse_text("text <- 'some string")
 
 # Incomplete names (don't write backtick quoted names on several lines!)
@@ -57,8 +57,5 @@ parse_text("log)")
 }
 \seealso{
 \code{\link[=parse]{parse()}}, \code{\link[=capture_all]{capture_all()}}
-}
-\concept{
-parsing expression, incomplete code
 }
 \keyword{IO}

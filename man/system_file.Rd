@@ -23,7 +23,7 @@ components to retrieve in 'temp', 'sysTemp', 'user', 'home', 'bin', 'doc',
 'etc' and/or 'share' to retrieve special system directories.}
 
 \item{exec}{If \code{TRUE} (default) search for executables on the search path.
-It superseedes all other arguments.}
+It supersedes all other arguments.}
 
 \item{package}{The name of one package to look for files or subdirs in its
 main directory (use \code{exec = FALSE} to search inside package dirs).}
@@ -68,7 +68,5 @@ system_dir("help", package = "splines")
 \seealso{
 \code{\link[=file_edit]{file_edit()}}, \code{\link[=file.path]{file.path()}}, \code{\link[=file.exists]{file.exists()}}
 }
-\concept{
-system files and directories
-}
+\concept{system files and directories}
 \keyword{utilities}

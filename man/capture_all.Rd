@@ -6,11 +6,9 @@
 \title{Run an R expression and capture output and messages in a similar way as it
 would be done at the command line}
 \usage{
-capture_all(expr, split = TRUE, echo = TRUE, file = NULL,
-  markStdErr = FALSE)
+capture_all(expr, split = TRUE, echo = TRUE, file = NULL, markStdErr = FALSE)
 
-captureAll(expr, split = TRUE, echo = TRUE, file = NULL,
-  markStdErr = FALSE)
+captureAll(expr, split = TRUE, echo = TRUE, file = NULL, markStdErr = FALSE)
 }
 \arguments{
 \item{expr}{A  valid R expression to evaluate (names and calls are also
@@ -21,9 +19,9 @@ console too, or do we only capture it silently?}
 
 \item{echo}{Do we echo each expression in front of the results (like in the
 console)? In case the expression spans on more than 7 lines, only first and
-last three lines are echoed, separated by \code{[...]}.}
+last three lines are echoed, separated by \verb{[...]}.}
 
-\item{file}{A file, or a valid opened connection where output is sinked. It
+\item{file}{A file, or a valid opened connection where output is sunk. It
 is closed at the end, and the function returns \code{NULL} in this case. If
 \code{file = NULL} (by default), a \code{textConnection()} captures the output and it
 is returned as a character string by the function.}
@@ -44,13 +42,16 @@ warnings if \code{options(warn = 0)}.
 }
 \note{
 If the expression is provided as a character string that should be
-evaluated, and you need a similar behaviour as at the prompt for incomplete
+evaluated, and you need a similar behavior as at the prompt for incomplete
 lines of code (that is, to prompt for more), you should not parse the
 expression with \code{parse(text = "<some_code>")} because it returns an error
 instead of an indication of an incomplete code line. Use
 \code{parse_text("<some_code>")} instead, like in the examples bellow.
 Of course, you have to deal with incomplete line management in your GUI/CLI
 application... the function only returns \code{NA} instead of a character string.
+Starting from version 1.1.3, \code{.Traceback} is not set any more in the base
+environment, but it is \code{.Traceback_capture_all} that is set in \code{temp_env()}.
+You can get its value with \code{get_temp(".Traceback_capture_all")}.
 }
 \examples{
 writeLines(capture_all(expression(1 + 1), split = FALSE))
@@ -63,13 +64,11 @@ writeLines(capture_all(parse_text("badname"), split = FALSE))
 
 # Management of incomplete lines
 capt_res <- capture_all(parse_text("1 +")) # Clearly an incomplete command
-if (is.na(capt_res)) cat("Incomplete line!\\n") else writeLines(capt_res)
+if (is.na(capt_res)) cat("Incomplete line!\n") else writeLines(capt_res)
 rm(capt_res)
 }
 \seealso{
 \code{\link[=parse]{parse()}}, \code{\link[=expression]{expression()}}, \code{\link[=capture.output]{capture.output()}}
 }
-\concept{
-capturing output for GUI clients
-}
+\concept{capturing output for GUI clients}
 \keyword{IO}

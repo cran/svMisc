@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Philippe Grosjean (phgrosjean@sciviews.org)" />
+
+<meta name="date" content="2021-04-16" />
+
+<title>svMisc - Miscellaneous Functions</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">svMisc - Miscellaneous Functions</h1>
+<h4 class="author">Philippe Grosjean (<a href="mailto:phgrosjean@sciviews.org" class="email">phgrosjean@sciviews.org</a>)</h4>
+<h4 class="date">2021-04-16</h4>
+
+
+
+<p>The ‘svMisc’ package contains a large collection of functions that are useful in the context of (G)UI (Graphical) User Interface development, and also, of more general usage. Here is a series of functions you should look at.</p>
+<div id="help" class="section level2">
+<h2>Help</h2>
+<p>In R, you access man pages for the various R objects with <code>help(topic)</code>, or <code>?topic</code>. But, if <code>topic</code> is not found, these function do not return a very useful information. For instance, if you want to make a <a href="https://www.jstatsoft.org/article/view/v039i02">Kalman filtering</a> in R, you may be inclined to search for the topic <code>kalman</code></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>?kalman</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; No documentation for &#39;kalman&#39; in specified packages and libraries:</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; you could try &#39;??kalman&#39;</span></span></code></pre></div>
+<p>OK, it is suggested to use <code>??</code> to search the documentation for <code>kalman</code>. However, using <code>about()</code> instead immediately produces a more useful result:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(svMisc)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; </span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; Attaching package: &#39;svMisc&#39;</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; </span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt;     ?</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">about</span>(<span class="st">&quot;kalman&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; &#39;kalman&#39; not found, do you mean?</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; stats::KalmanForecast, stats::KalmanLike, stats::KalmanRun, stats::KalmanSmooth</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; Searching keyword in all R help pages for &#39;&#39;...</span></span></code></pre></div>
+<p>… and it also provides a list of potential man pages that could interest you. In case the topic is found, <code>about()</code> does the same as <code>help()</code> and shows the page (try with <code>about(&quot;log&quot;)</code>, for instance). If you still have not found what you are looking for, you could try to search on the Web by using <code>search_web()</code>.</p>
+<p>You may also be interested by <code>is_help()</code> that indicates if an object is associated with a man page, and if it has a running example.</p>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>In R, the use of <code>library()</code> to load a <strong>package</strong> is very confusing. Given the number of questions raised about it, one could consider another function to load R packages in memory. <code>svMisc</code> proposes <code>package()</code>. That function loads one or several R packages as silently as possible and it returns <code>TRUE</code> only if <strong>all</strong> the packages are loaded. Otherwise, the list of missing packages is recorded<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and one could simply issue <code>Install()</code> to install them. This is indeed a semi-automatic installation mechanisms for R packages. The UseR still masters the process, but it is more straightforward.</p>
+</div>
+<div id="analyses-in-batch-and-show-progression" class="section level2">
+<h2>Analyses in batch and show progression</h2>
+<p>If you need to perform an analysis in batch mode, you may be happy with <code>batch()</code> and <code>progress()</code>. The first function runs a function sequentially on all items <strong>allowing for an informative message in case of failure</strong>. Also, <code>batch()</code> provides a mechanism to recover from the error, so that following items in the list are also analyzed. Indeed, if you use a simple <code>for()</code> loop or <code>applyXXX()</code> functions, the execution is stopped at the first error encountered. Imagine 500 items to process, and an error that appears at the second one… it leaves you 498 items unanalyzed! allows to continue to the next item.</p>
+<p>The example shows a fake batch process of files, which fails randomly. Here is the function to run sequentially:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>fake_process &lt;-<span class="st"> </span><span class="cf">function</span>(file) {</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="kw">message</span>(<span class="st">&quot;Processing &quot;</span>, file, <span class="st">&quot;...&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="kw">flush.console</span>()</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">Sys.sleep</span>(<span class="fl">0.5</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="cf">if</span> (<span class="kw">runif</span>(<span class="dv">1</span>) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.7</span>) {<span class="co"># Fail</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="kw">warning</span>(<span class="st">&quot;fake_process was unable to process &quot;</span>, file)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    <span class="kw">invisible</span>(<span class="ot">FALSE</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a>  } <span class="cf">else</span> <span class="kw">invisible</span>(<span class="ot">TRUE</span>)</span>
+<span id="cb3-9"><a href="#cb3-9"></a>}</span></code></pre></div>
+<p>The key aspect here is that you function, instead of using <code>stop()</code> must use <code>warning()</code> and return <code>FALSE</code>. Otherwise, in case of success, it should return <code>TRUE</code>. Then, calling your function on a series of objects is straightforward:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Run it in batch mode on ten items</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">batch</span>(<span class="kw">paste0</span>(<span class="st">&quot;file&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>), fake_process)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; Running the batch process with fake_process...</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; </span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; Progress:  1 on 10  Progress:  2 on 10</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; Warning in fun(item, ...): fake_process was unable to process file2</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; Progress:  3 on 10  Progress:  4 on 10  Progress:  5 on 10</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; Warning in fun(item, ...): fake_process was unable to process file5</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; Progress:  6 on 10  Progress:  7 on 10</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; Warning in fun(item, ...): fake_process was unable to process file7</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; </span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; Progress:  8 on 10  Progress:  9 on 10  Progress: 10 on 10                      </span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; Processed successfully 7 items on 10 (see .last.batch)</span></span></code></pre></div>
+<p>In case an error occurred, the information is recorded i, <code>.last.batch</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>.last.batch</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; attr(,&quot;items&quot;)</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;  [1] &quot;file1&quot;  &quot;file2&quot;  &quot;file3&quot;  &quot;file4&quot;  &quot;file5&quot;  &quot;file6&quot;  &quot;file7&quot;  &quot;file8&quot; </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;  [9] &quot;file9&quot;  &quot;file10&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; attr(,&quot;ok&quot;)</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  [1]  TRUE FALSE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE</span></span></code></pre></div>
+<p>The <code>items</code> and <code>ok</code> attributes are also available from that object for further inspection and action.</p>
+<p>If you run <code>batch()</code> in R, you noted also the <code>progress()</code>ion message that appeared. Indeed the <code>progress()</code> function allows to display such a message, either as a text at the R console, or in a dialog box. There are many different forms, see the man page <code>?progress</code>. for instance, here is a progress bar in percent, stopped at 75% () you need to call <code>progress()</code> with a value higher than <code>max.value =</code> to dismiss it):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">0</span><span class="op">:</span><span class="dv">75</span>) {</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="kw">progress</span>(i, <span class="dt">progress.bar =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="co"># Some process here...</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>}</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt;           0%---------25%---------50%---------75%--------100%</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; Progress: ||||||||||||||||||||||||||||||||||||||</span></span></code></pre></div>
+</div>
+<div id="subsettable-functions" class="section level2">
+<h2>Subsettable functions</h2>
+<p>The <code>$</code> operator is not applicable on functions. It is not meaningful in that context. Yet, it may be convenient to use it in certain conditions. From the example of <code>?subsettable</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>foo &lt;-<span class="st"> </span><span class="kw">structure</span>(<span class="cf">function</span>(x, <span class="dt">type =</span> <span class="kw">c</span>(<span class="st">&quot;histogram&quot;</span>, <span class="st">&quot;boxplot&quot;</span>), ...) {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  type &lt;-<span class="st"> </span><span class="kw">match.arg</span>(type, <span class="kw">c</span>(<span class="st">&quot;histogram&quot;</span>, <span class="st">&quot;boxplot&quot;</span>))</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="cf">switch</span>(type,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="dt">histogram =</span> <span class="kw">hist</span>(x, ...),</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="dt">boxplot =</span> <span class="kw">boxplot</span>(x, ...),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="kw">stop</span>(<span class="st">&quot;unknow type&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>  )</span>
+<span id="cb7-8"><a href="#cb7-8"></a>}, <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;function&quot;</span>, <span class="st">&quot;subsettable_type&quot;</span>))</span>
+<span id="cb7-9"><a href="#cb7-9"></a>foo</span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; function(x, type = c(&quot;histogram&quot;, &quot;boxplot&quot;), ...) {</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt;   type &lt;- match.arg(type, c(&quot;histogram&quot;, &quot;boxplot&quot;))</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;   switch(type,</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt;     histogram = hist(x, ...),</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt;     boxplot = boxplot(x, ...),</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt;     stop(&quot;unknow type&quot;)</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;   )</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; }</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; [1] &quot;function&quot;         &quot;subsettable_type&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co"># This function can be used as usual:</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="kw">foo</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>), <span class="dt">type =</span> <span class="st">&quot;histogram&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># ... but also this way:</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>foo<span class="op">$</span><span class="kw">histogram</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>foo<span class="op">$</span><span class="kw">boxplot</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="capture-and-parse-r-code" class="section level2">
+<h2>Capture and parse R code</h2>
+<p>The <code>capture.output()</code> function from the ‘utils’ package can capture output usually send to the R console, but it does so in an imperfect way. If you want to capture output <em>exactly</em> as it would appear at the R console, you could use <code>capture_all()</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>captured &lt;-<span class="st"> </span><span class="kw">capture_all</span>(<span class="kw">parse_text</span>(<span class="st">&#39;1:2 + 1:3&#39;</span>), <span class="dt">split =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt; Warning in 1:2 + 1:3: longer object length is not a multiple of shorter object</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; length</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>captured</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; [1] &quot;:&gt; 1:2 + 1:3&quot; &quot;[1] 2 4 4\n&quot;</span></span></code></pre></div>
+<p>Only the prompt is changed to <code>:&gt;</code>. You can use that content, or print it somewhere, for instance:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">writeLines</span>(captured)</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#&gt; :&gt; 1:2 + 1:3</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt; [1] 2 4 4</span></span></code></pre></div>
+<p>The <code>parse_text()</code> function parse one or more character strings exactly as if they were commands entered at the R prompt:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">parse_text</span>(<span class="kw">c</span>(<span class="st">&quot;1 + 1&quot;</span>, <span class="st">&quot;log(10)&quot;</span>))</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; expression(1 + 1, log(10))</span></span></code></pre></div>
+<p>… and for an incomplete expression:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">parse_text</span>(<span class="st">&quot;log(&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+<p>The <code>source_clipboard()</code> source code directly from the clipboard. All these functions form the basis to simulate an R console in a different context (a console widget in your own GUI). You can combine this with <code>to_rjson()</code>/<code>eval_rjson</code> to encode and decode R objects on both sides of a pipeline between the R process and your GUI.</p>
+</div>
+<div id="encodedecode-r-objects-in-rjson" class="section level2">
+<h2>Encode/decode R objects in Rjson</h2>
+<p>Rjson is a version of <a href="https://www.json.org/json-en.html">JSON</a> that allows to encore and decode rapidly almost all R objects. From the example at <code>?to_rjson</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># A complex R object</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co"># Note: we round doubles to 14 digits because precision is lost in the process</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>obj &lt;-<span class="st"> </span><span class="kw">structure</span>(<span class="kw">list</span>(</span>
+<span id="cb14-4"><a href="#cb14-4"></a>  <span class="dt">a =</span> <span class="kw">as.double</span>(<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">6</span>)),</span>
+<span id="cb14-5"><a href="#cb14-5"></a>  LETTERS,</span>
+<span id="cb14-6"><a href="#cb14-6"></a>  <span class="dt">c =</span> <span class="kw">c</span>(<span class="dt">c1 =</span> <span class="fl">4.5</span>, <span class="dt">c2 =</span> <span class="fl">7.8</span>, <span class="dt">c3 =</span> <span class="ot">Inf</span>, <span class="dt">c4 =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="ot">NA</span>, <span class="dt">c6 =</span> <span class="ot">NaN</span>),</span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">NA</span>),</span>
+<span id="cb14-8"><a href="#cb14-8"></a>  <span class="dt">e =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)),</span>
+<span id="cb14-9"><a href="#cb14-9"></a>  <span class="dt">f =</span> <span class="st">&#39;this is a &quot;string&quot; with quote&#39;</span>,</span>
+<span id="cb14-10"><a href="#cb14-10"></a>  <span class="dt">g =</span> <span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">4</span>), <span class="dv">14</span>), <span class="dt">ncol =</span> <span class="dv">2</span>),</span>
+<span id="cb14-11"><a href="#cb14-11"></a>  <span class="st">`</span><span class="dt">h&amp;$@</span><span class="st">`</span> =<span class="st"> </span><span class="kw">list</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">y =</span> <span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">3</span>), <span class="dv">14</span>),</span>
+<span id="cb14-12"><a href="#cb14-12"></a>    <span class="dt">fact =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))),</span>
+<span id="cb14-13"><a href="#cb14-13"></a>  <span class="dt">i =</span> <span class="kw">Sys.Date</span>(),</span>
+<span id="cb14-14"><a href="#cb14-14"></a>  <span class="dt">j =</span> <span class="kw">list</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dt">y =</span> <span class="st">&quot;another item&quot;</span>)),</span>
+<span id="cb14-15"><a href="#cb14-15"></a>  <span class="dt">comment =</span> <span class="st">&quot;My comment&quot;</span>,</span>
+<span id="cb14-16"><a href="#cb14-16"></a>  <span class="dt">anAttrib =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,</span>
+<span id="cb14-17"><a href="#cb14-17"></a>  <span class="dt">anotherAttrib =</span> <span class="kw">list</span>(<span class="ot">TRUE</span>, <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>))</span>
+<span id="cb14-18"><a href="#cb14-18"></a></span>
+<span id="cb14-19"><a href="#cb14-19"></a><span class="co"># Convert to RJSON</span></span>
+<span id="cb14-20"><a href="#cb14-20"></a>(rjson1 &lt;-<span class="st"> </span><span class="kw">to_rjson</span>(obj, <span class="dt">attributes =</span> <span class="ot">TRUE</span>))</span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="co">#&gt;  [1] list(&quot;Data_&quot; := list(&quot;a&quot; := c(1., 2., 3., 4., 5., 6.), &quot;&quot; := c(&quot;A&quot;,                                                                    </span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="co">#&gt;  [2] &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;, &quot;I&quot;, &quot;J&quot;, &quot;K&quot;, &quot;L&quot;, &quot;M&quot;, &quot;N&quot;,                                                                       </span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="co">#&gt;  [3] &quot;O&quot;, &quot;P&quot;, &quot;Q&quot;, &quot;R&quot;, &quot;S&quot;, &quot;T&quot;, &quot;U&quot;, &quot;V&quot;, &quot;W&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;),                                                                           </span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="co">#&gt;  [4]     &quot;c&quot; := c(c1 = 4.5, c2 = 7.8, c3 = Inf, c4 = -Inf,                                                                                  </span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt;  [5]     NA, c6 = NaN), &quot;&quot; := c(TRUE, FALSE, NA), &quot;e&quot; := list(&quot;Data_&quot; := c(1,                                                               </span></span>
+<span id="cb14-26"><a href="#cb14-26"></a><span class="co">#&gt;  [6]     2, 1), &quot;levels&quot; := c(&quot;a&quot;, &quot;b&quot;), &quot;class&quot; := &quot;factor&quot;),                                                                              </span></span>
+<span id="cb14-27"><a href="#cb14-27"></a><span class="co">#&gt;  [7]     &quot;f&quot; := &quot;this is a \\&quot;string\\&quot; with quote&quot;, &quot;g&quot; := list(&quot;Data_&quot; := c(1.12168292422159,                                             </span></span>
+<span id="cb14-28"><a href="#cb14-28"></a><span class="co">#&gt;  [8]     0.4697976889755, -1.7440419413504, 0.29436284834502), &quot;dim&quot; := c(2,                                                                </span></span>
+<span id="cb14-29"><a href="#cb14-29"></a><span class="co">#&gt;  [9]     2)), &quot;h&amp;$@&quot; := list(&quot;x&quot; := seq(1, 3), &quot;y&quot; := c(-1.14385065187926,                                                                  </span></span>
+<span id="cb14-30"><a href="#cb14-30"></a><span class="co">#&gt; [10]     -0.16715615033593, -1.13872161165033), &quot;fact&quot; := list(&quot;Data_&quot; := c(2,                                                              </span></span>
+<span id="cb14-31"><a href="#cb14-31"></a><span class="co">#&gt; [11]     1, 2), &quot;levels&quot; := c(&quot;a&quot;, &quot;b&quot;), &quot;class&quot; := &quot;factor&quot;)),                                                                             </span></span>
+<span id="cb14-32"><a href="#cb14-32"></a><span class="co">#&gt; [12]     &quot;i&quot; := list(&quot;Data_&quot; := 18733., &quot;class&quot; := &quot;Date&quot;),                                                                                 </span></span>
+<span id="cb14-33"><a href="#cb14-33"></a><span class="co">#&gt; [13]     &quot;j&quot; := list(&quot;&quot; := seq(1, 5), &quot;y&quot; := &quot;another item&quot;)), &quot;comment&quot; := &quot;My comment&quot;, &quot;anAttrib&quot; := seq(1, 10), &quot;anotherAttrib&quot; := list(</span></span>
+<span id="cb14-34"><a href="#cb14-34"></a><span class="co">#&gt; [14]     &quot;&quot; := TRUE, &quot;y&quot; := seq(1, 4)))</span></span>
+<span id="cb14-35"><a href="#cb14-35"></a><span class="co"># Get back an R object from Rjson</span></span>
+<span id="cb14-36"><a href="#cb14-36"></a>(obj2 &lt;-<span class="st"> </span><span class="kw">eval_rjson</span>(rjson1))</span>
+<span id="cb14-37"><a href="#cb14-37"></a><span class="co">#&gt; $a</span></span>
+<span id="cb14-38"><a href="#cb14-38"></a><span class="co">#&gt; [1] 1 2 3 4 5 6</span></span>
+<span id="cb14-39"><a href="#cb14-39"></a><span class="co">#&gt; </span></span>
+<span id="cb14-40"><a href="#cb14-40"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb14-41"><a href="#cb14-41"></a><span class="co">#&gt;  [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot; &quot;E&quot; &quot;F&quot; &quot;G&quot; &quot;H&quot; &quot;I&quot; &quot;J&quot; &quot;K&quot; &quot;L&quot; &quot;M&quot; &quot;N&quot; &quot;O&quot; &quot;P&quot; &quot;Q&quot; &quot;R&quot; &quot;S&quot;</span></span>
+<span id="cb14-42"><a href="#cb14-42"></a><span class="co">#&gt; [20] &quot;T&quot; &quot;U&quot; &quot;V&quot; &quot;W&quot; &quot;X&quot; &quot;Y&quot; &quot;Z&quot;</span></span>
+<span id="cb14-43"><a href="#cb14-43"></a><span class="co">#&gt; </span></span>
+<span id="cb14-44"><a href="#cb14-44"></a><span class="co">#&gt; $c</span></span>
+<span id="cb14-45"><a href="#cb14-45"></a><span class="co">#&gt;   c1   c2   c3   c4        c6 </span></span>
+<span id="cb14-46"><a href="#cb14-46"></a><span class="co">#&gt;  4.5  7.8  Inf -Inf   NA  NaN </span></span>
+<span id="cb14-47"><a href="#cb14-47"></a><span class="co">#&gt; </span></span>
+<span id="cb14-48"><a href="#cb14-48"></a><span class="co">#&gt; [[4]]</span></span>
+<span id="cb14-49"><a href="#cb14-49"></a><span class="co">#&gt; [1]  TRUE FALSE    NA</span></span>
+<span id="cb14-50"><a href="#cb14-50"></a><span class="co">#&gt; </span></span>
+<span id="cb14-51"><a href="#cb14-51"></a><span class="co">#&gt; $e</span></span>
+<span id="cb14-52"><a href="#cb14-52"></a><span class="co">#&gt; [1] a b a</span></span>
+<span id="cb14-53"><a href="#cb14-53"></a><span class="co">#&gt; Levels: a b</span></span>
+<span id="cb14-54"><a href="#cb14-54"></a><span class="co">#&gt; </span></span>
+<span id="cb14-55"><a href="#cb14-55"></a><span class="co">#&gt; $f</span></span>
+<span id="cb14-56"><a href="#cb14-56"></a><span class="co">#&gt; [1] &quot;this is a \&quot;string\&quot; with quote&quot;</span></span>
+<span id="cb14-57"><a href="#cb14-57"></a><span class="co">#&gt; </span></span>
+<span id="cb14-58"><a href="#cb14-58"></a><span class="co">#&gt; $g</span></span>
+<span id="cb14-59"><a href="#cb14-59"></a><span class="co">#&gt;           [,1]       [,2]</span></span>
+<span id="cb14-60"><a href="#cb14-60"></a><span class="co">#&gt; [1,] 1.1216829 -1.7440419</span></span>
+<span id="cb14-61"><a href="#cb14-61"></a><span class="co">#&gt; [2,] 0.4697977  0.2943628</span></span>
+<span id="cb14-62"><a href="#cb14-62"></a><span class="co">#&gt; </span></span>
+<span id="cb14-63"><a href="#cb14-63"></a><span class="co">#&gt; $`h&amp;$@`</span></span>
+<span id="cb14-64"><a href="#cb14-64"></a><span class="co">#&gt; $`h&amp;$@`$x</span></span>
+<span id="cb14-65"><a href="#cb14-65"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb14-66"><a href="#cb14-66"></a><span class="co">#&gt; </span></span>
+<span id="cb14-67"><a href="#cb14-67"></a><span class="co">#&gt; $`h&amp;$@`$y</span></span>
+<span id="cb14-68"><a href="#cb14-68"></a><span class="co">#&gt; [1] -1.1438507 -0.1671562 -1.1387216</span></span>
+<span id="cb14-69"><a href="#cb14-69"></a><span class="co">#&gt; </span></span>
+<span id="cb14-70"><a href="#cb14-70"></a><span class="co">#&gt; $`h&amp;$@`$fact</span></span>
+<span id="cb14-71"><a href="#cb14-71"></a><span class="co">#&gt; [1] b a b</span></span>
+<span id="cb14-72"><a href="#cb14-72"></a><span class="co">#&gt; Levels: a b</span></span>
+<span id="cb14-73"><a href="#cb14-73"></a><span class="co">#&gt; </span></span>
+<span id="cb14-74"><a href="#cb14-74"></a><span class="co">#&gt; </span></span>
+<span id="cb14-75"><a href="#cb14-75"></a><span class="co">#&gt; $i</span></span>
+<span id="cb14-76"><a href="#cb14-76"></a><span class="co">#&gt; [1] &quot;2021-04-16&quot;</span></span>
+<span id="cb14-77"><a href="#cb14-77"></a><span class="co">#&gt; </span></span>
+<span id="cb14-78"><a href="#cb14-78"></a><span class="co">#&gt; $j</span></span>
+<span id="cb14-79"><a href="#cb14-79"></a><span class="co">#&gt; $j[[1]]</span></span>
+<span id="cb14-80"><a href="#cb14-80"></a><span class="co">#&gt; [1] 1 2 3 4 5</span></span>
+<span id="cb14-81"><a href="#cb14-81"></a><span class="co">#&gt; </span></span>
+<span id="cb14-82"><a href="#cb14-82"></a><span class="co">#&gt; $j$y</span></span>
+<span id="cb14-83"><a href="#cb14-83"></a><span class="co">#&gt; [1] &quot;another item&quot;</span></span>
+<span id="cb14-84"><a href="#cb14-84"></a><span class="co">#&gt; </span></span>
+<span id="cb14-85"><a href="#cb14-85"></a><span class="co">#&gt; </span></span>
+<span id="cb14-86"><a href="#cb14-86"></a><span class="co">#&gt; attr(,&quot;anAttrib&quot;)</span></span>
+<span id="cb14-87"><a href="#cb14-87"></a><span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></span>
+<span id="cb14-88"><a href="#cb14-88"></a><span class="co">#&gt; attr(,&quot;anotherAttrib&quot;)</span></span>
+<span id="cb14-89"><a href="#cb14-89"></a><span class="co">#&gt; attr(,&quot;anotherAttrib&quot;)[[1]]</span></span>
+<span id="cb14-90"><a href="#cb14-90"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb14-91"><a href="#cb14-91"></a><span class="co">#&gt; </span></span>
+<span id="cb14-92"><a href="#cb14-92"></a><span class="co">#&gt; attr(,&quot;anotherAttrib&quot;)$y</span></span>
+<span id="cb14-93"><a href="#cb14-93"></a><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span id="cb14-94"><a href="#cb14-94"></a><span class="co"># Is it identical to obj?</span></span>
+<span id="cb14-95"><a href="#cb14-95"></a><span class="kw">identical</span>(obj, obj2)</span>
+<span id="cb14-96"><a href="#cb14-96"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+</div>
+<div id="get-system-file-or-directory" class="section level2">
+<h2>Get system file or directory</h2>
+<p>There are several different functions in R to access system files, or files inside R packages: <code>R.home()</code>, <code>system.file()</code>, <code>Sys.which()</code>, <code>tempdir()</code>. The <code>system_dir()</code> and <code>system_file()</code> functions centralize their functionalities. For instance:</p>
+<ul>
+<li>Get the temporary directory used by this R process</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">system_dir</span>(<span class="st">&quot;temp&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="co">#&gt; [1] &quot;/var/folders/47/r8d7nrt56yzblmpp1f_tfg5m0000gn/T//RtmpRtzLXt&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the system temporary directory</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">system_dir</span>(<span class="st">&quot;sysTemp&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#&gt; [1] &quot;/tmp&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the home directory of the current user</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">system_dir</span>(<span class="st">&quot;user&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co">#&gt; [1] &quot;/Users/phgrosjean&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the R home directory</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">system_dir</span>(<span class="st">&quot;home&quot;</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="co">#&gt; [1] &quot;/Library/Frameworks/R.framework/Resources&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the path to an executable</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">system_dir</span>(<span class="st">&quot;zip&quot;</span>, <span class="dt">exec =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#&gt; [1] &quot;/usr/bin&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the file of that executable</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">system_file</span>(<span class="st">&quot;zip&quot;</span>, <span class="dt">exec =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="co">#&gt; [1] &quot;/usr/bin/zip&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the root directory of a package</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">system_dir</span>(<span class="dt">package =</span> <span class="st">&quot;stats&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="co">#&gt; [1] &quot;/Library/Frameworks/R.framework/Resources/library/stats&quot;</span></span></code></pre></div>
+<ul>
+<li>Get a file from a package</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">system_file</span>(<span class="st">&quot;help&quot;</span>, <span class="st">&quot;AnIndex&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;splines&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="co">#&gt; [1] &quot;/Library/Frameworks/R.framework/Resources/library/splines/help/AnIndex&quot;</span></span></code></pre></div>
+<p>There are other possibilities. See <code>?system_dir</code>. You may also be interested by <code>file_edit()</code> that allows to create and edit a text file from a template.</p>
+</div>
+<div id="various-information-functions" class="section level2">
+<h2>Various information functions</h2>
+<ul>
+<li><code>compare_r_version()</code> conveniently compares the current R version with a specified one. It returns 1 if it is newer, 0, if it is equal and -1 if it is older.</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">compare_r_version</span>(<span class="st">&quot;5.6.0&quot;</span>) <span class="co"># Probably older</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="co">#&gt; [1] -1</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">compare_r_version</span>(<span class="st">&quot;0.6.0&quot;</span>) <span class="co"># Probably newer</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<ul>
+<li>Check the environment:</li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">is_win</span>() <span class="co"># Windows?</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="kw">is_mac</span>() <span class="co"># MacOS?</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a><span class="kw">is_rgui</span>() <span class="co"># Is it RGui under Windows?</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a><span class="kw">is_sdi</span>() <span class="co"># Is RGui run in SDI mode (separate windows)?</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a><span class="kw">is_rstudio</span>() <span class="co"># Is it RStudio?</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-11"><a href="#cb25-11"></a><span class="kw">is_rstudio_desktop</span>() <span class="co"># RStudio desktop?</span></span>
+<span id="cb25-12"><a href="#cb25-12"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-13"><a href="#cb25-13"></a><span class="kw">is_rstudio_server</span>() <span class="co"># RStudio server?</span></span>
+<span id="cb25-14"><a href="#cb25-14"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb25-15"><a href="#cb25-15"></a><span class="kw">is_jgr</span>() <span class="co"># Is R running under JGR?</span></span>
+<span id="cb25-16"><a href="#cb25-16"></a><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+</div>
+<div id="miscellaneous" class="section level2">
+<h2>Miscellaneous</h2>
+<ul>
+<li>Make sure a vector is of a defined mode and length (possibly by applying recycling rule) using <code>def()</code>:</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">def</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">mode =</span> <span class="st">&quot;logical&quot;</span>, <span class="dt">length.out =</span> <span class="dv">5</span>) <span class="co"># logical, size 5</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="co">#&gt; [1] FALSE  TRUE  TRUE FALSE  TRUE</span></span></code></pre></div>
+<ul>
+<li>Get a nicely formatted <code>args()</code> (see <code>?arg_tips</code> for other functions to get short textual information about functions):</li>
+</ul>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">args_tip</span>(<span class="st">&quot;ls&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="co">#&gt; [1] &quot;ls(name, pos = -1L, envir = as.environment(pos), all.names = FALSE, pattern,\n    sorted = TRUE)&quot;</span></span></code></pre></div>
+<ul>
+<li>Get the name of an (unused) temporary variable:</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">temp_var</span>(<span class="st">&quot;my_var&quot;</span>)</span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="co">#&gt; [1] &quot;my_var846&quot;</span></span></code></pre></div>
+<ul>
+<li>Manage a temporary environment attached to the search path using <code>TempEnv()</code> and the <code>temp_XXX()</code> functions. The <strong>temporary_environment</strong> vignette gives more details on this series of functions.</li>
+</ul>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">search</span>()</span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="co">#&gt;  [1] &quot;.GlobalEnv&quot;        &quot;package:svMisc&quot;    &quot;package:stats&quot;    </span></span>
+<span id="cb29-3"><a href="#cb29-3"></a><span class="co">#&gt;  [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    </span></span>
+<span id="cb29-4"><a href="#cb29-4"></a><span class="co">#&gt;  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;SciViews:TempEnv&quot; </span></span>
+<span id="cb29-5"><a href="#cb29-5"></a><span class="co">#&gt; [10] &quot;Autoloads&quot;         &quot;package:base&quot;</span></span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="co"># Assign a variable in a temporary environment</span></span>
+<span id="cb29-7"><a href="#cb29-7"></a><span class="kw">assign_temp</span>(<span class="st">&quot;my_var&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="co"># The environment is named SciViews:TempEnv</span></span>
+<span id="cb29-9"><a href="#cb29-9"></a><span class="kw">search</span>()</span>
+<span id="cb29-10"><a href="#cb29-10"></a><span class="co">#&gt;  [1] &quot;.GlobalEnv&quot;        &quot;package:svMisc&quot;    &quot;package:stats&quot;    </span></span>
+<span id="cb29-11"><a href="#cb29-11"></a><span class="co">#&gt;  [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    </span></span>
+<span id="cb29-12"><a href="#cb29-12"></a><span class="co">#&gt;  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;SciViews:TempEnv&quot; </span></span>
+<span id="cb29-13"><a href="#cb29-13"></a><span class="co">#&gt; [10] &quot;Autoloads&quot;         &quot;package:base&quot;</span></span>
+<span id="cb29-14"><a href="#cb29-14"></a><span class="co"># Get the variable</span></span>
+<span id="cb29-15"><a href="#cb29-15"></a><span class="kw">get_temp</span>(<span class="st">&quot;my_var&quot;</span>)</span>
+<span id="cb29-16"><a href="#cb29-16"></a><span class="co">#&gt; [1] 1 2 3 4 5</span></span>
+<span id="cb29-17"><a href="#cb29-17"></a><span class="co"># List variables in the temporary environment</span></span>
+<span id="cb29-18"><a href="#cb29-18"></a><span class="kw">ls</span>(<span class="dt">envir =</span> <span class="kw">TempEnv</span>())</span>
+<span id="cb29-19"><a href="#cb29-19"></a><span class="co">#&gt; [1] &quot;my_var&quot;</span></span>
+<span id="cb29-20"><a href="#cb29-20"></a><span class="co"># Delete the variable</span></span>
+<span id="cb29-21"><a href="#cb29-21"></a><span class="kw">rm_temp</span>(<span class="st">&quot;my_var&quot;</span>)</span></code></pre></div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The list of missing packages is written in a variable named <code>.packages_to_install</code> located in the <code>SciViews:TempEnv</code> environment<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

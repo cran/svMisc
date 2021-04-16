@@ -4,10 +4,22 @@
 \alias{completion}
 \title{Get a completion list for a R code fragment}
 \usage{
-completion(code, pos = nchar(code), min.length = 2, print = FALSE,
-  types = c("default", "scintilla"), addition = FALSE, sort = TRUE,
-  what = c("arguments", "functions", "packages"), description = FALSE,
-  max.fun = 100, skip.used.args = TRUE, sep = "\\n", field.sep = "\\t")
+completion(
+  code,
+  pos = nchar(code),
+  min.length = 2,
+  print = FALSE,
+  types = c("default", "scintilla"),
+  addition = FALSE,
+  sort = TRUE,
+  what = c("arguments", "functions", "packages"),
+  description = FALSE,
+  max.fun = 100,
+  skip.used.args = TRUE,
+  sep = "\\n",
+  field.sep = "\\t",
+  name.or.addition = c("name", "addition", "both")
+)
 }
 \arguments{
 \item{code}{A partial R code to be completed.}
@@ -42,12 +54,15 @@ should the already used named arguments be omitted?}
 \item{sep}{The separator to use between returned items.}
 
 \item{field.sep}{Character string to separate fields for each entry.}
+
+\item{name.or.addition}{Should we return the completion name, addition string, or both?}
 }
 \value{
 If \code{types == NA} and \code{description = FALSE}, a character vector giving
 the completions, otherwise a data frame with two columns: 'completion', and
 'type' when \code{description = FALSE}, or with four columns: 'completion',
-'type', 'desc' and 'context' when \code{description = TRUE}.\cr
+'type', 'desc' and 'context' when \code{description = TRUE}. If name.or.addition == 'both',
+an 'addition' column is also returned.\cr
 Attributes:\cr
 \code{attr(, "token")} - a completed token.\cr
 \code{attr(, "triggerPos")} - number of already typed characters.\cr
@@ -90,7 +105,7 @@ There are other situations where the completion can be calculated, see the
 help of \code{\link[=rc.settings]{rc.settings()}}.
 
 If \code{print == TRUE}, results are returned invisibly, and printed in a form:
-triggerPos<newline>completions separated by \code{sep}.
+triggerPos \emph{newline} completions separated by \code{sep}.
 
 If \code{types} are supplied, a completion will consist of name and type,
 separated by \code{type.sep}. \code{types} may me a vector of length 5, giving the type
@@ -128,8 +143,5 @@ rm(iris, t1)
 \author{
 Philippe Grosjean \href{mailto:phgrosjean@sciviews.org}{phgrosjean@sciviews.org} &
 Kamil Barton \href{mailto:kamil.barton@uni-wuerzburg.de}{kamil.barton@uni-wuerzburg.de}
-}
-\concept{
-graphical user interface (GUI) control, completion
 }
 \keyword{utilities}
