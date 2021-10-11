@@ -9,11 +9,14 @@ BBEdit
 calltip
 camelCase
 CLI
+CMD
 de
 desc
 devtools
 dir
 dirs
+DOI
+dontrun
 envir
 ETX
 gedit
@@ -24,6 +27,7 @@ infructuous
 isFirstArg
 JGR
 JSON
+JSS
 Kalman
 kamil
 kate
@@ -54,6 +58,7 @@ sddout
 stderr
 STX
 subdirs
+subfolder
 subpath
 subpaths
 subsettable
