@@ -66,11 +66,9 @@ determined automatically.
 
 On Unixes, "gedit", "kate" and "vi" are looked for in that order. Note that
 there is a gedit plugin to submit code directly to R:
-\url{http://rgedit.sourceforge.net/}. Since, gedit natively supports a lot of
+\url{https://rgedit.sourceforge.net/}. Since, gedit natively supports a lot of
 different syntax highlighting, including R, and is lightweight but feature
 rich, it is recommended as default text editor for \code{file_edit()} on Unixes.
-If JGR is run and the editor is "vi" or "internal", then the internal JGR
-editor is used, otherwise, the provided editor is chosen.
 
 On MacOS, if the "bbedit" program exists, it is used (it is the command line
 program installed by BBEdit, see \url{http://www.barebones.com/products/}, a much
@@ -81,9 +79,9 @@ several tools that makes it a much better choice than TextEdit for
 \code{file_edit()} on MacOS. Specify "bbedit" to force using it. The default value
 is "textedit", the MacOS default text editor, but on R.app, and with
 \code{wait = FALSE}, the internal R.app editor is used instead in that case. If
-RStudio or JGR is run, and the editor is "textedit", "internal" or "vi", then,
-the RStudio or JGR internal editor is used instead. If \code{wait = TRUE} with an
-RStudio editor, it is enough to switch to another editor to continue.
+RStudio is run, and the editor is "textedit", "internal" or "vi", then, the
+RStudio internal editor is used instead. If \code{wait = TRUE} with an RStudio
+editor, it is enough to switch to another editor to continue.
 
 On Windows, if Notepad++ is installed in its default location, it is used,
 otherwise, the default "notepad" is used in Rterm and the internal editors
@@ -92,7 +90,7 @@ suited to edit code or text files that the default Windows' notepad
 application, in particular because it can handle various line end types
 (Unix, Mac or Windows) and encodings. It also supports syntax highlighting,
 code completion and much more. So, it is strongly recommended to install it
-(see \url{http://notepad-plus-plus.org/}) and use it with \code{file-edit()}. There is
+(see \url{https://notepad-plus-plus.org/}) and use it with \code{file-edit()}. There is
 also a plugin to submit code to R directly from Notepad++:
 \url{https://sourceforge.net/projects/npptor/}.
 

@@ -4,15 +4,9 @@
 \name{svMisc-package}
 \alias{svMisc}
 \alias{svMisc-package}
-\title{svMisc: 'SciViews' - Miscellaneous Functions}
+\title{Miscellaneous Functions for 'SciViews::R'}
 \description{
-Miscellaneous functions for 'SciViews' or general use: manage a
-  temporary environment attached to the search path for temporary variables you
-  do not want to save() or load(), test if 'Aqua', 'Mac', 'Win', ... Show
-  progress bar, etc.
-}
-\details{
-The 'svMisc' package is of general use among \code{SciViews::R}, a layer on top of
+The \{svMisc\} package is of general use among SciViews::R, a layer on top of
 R, and the tidyverse. This package collects together a series of general
 functions to manage a centralized environment for temporary variables, a
 progress bar and batch analysis mode, etc.
@@ -47,4 +41,3 @@ Other contributors:
 }
 
 }
-\keyword{internal}
